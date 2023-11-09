@@ -9,8 +9,7 @@ sphinx:
   configuration: docs/source/conf.py
 python:
   install:
-  - method: pip
+  - method: pip, recommonmark
     path: .
     extra_requirements:
     - doc
-    - recommonmark

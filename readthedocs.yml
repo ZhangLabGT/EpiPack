@@ -9,7 +9,7 @@ sphinx:
   configuration: docs/source/conf.py
 python:
   install:
-  - method: pip, recommonmark
+  - method: pip, recommonmark, sphinx==6.2.1
     path: .
     extra_requirements:
     - doc

@@ -17,6 +17,7 @@ EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type a
     numpy >= 1.21.6
     pandas >= 1.3.5
 ```
+Note: For pytorch installation, we recommend users go to the pytorch portal to download based on their CUDA version.
 
 ### Installation
 The package has been uploaded to PyPI. Users can download the package and dependent packages by:

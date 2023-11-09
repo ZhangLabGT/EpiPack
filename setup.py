@@ -35,10 +35,11 @@ setup(
         "scikit-learn>=0.23, <2.0.0",
         "tqdm>=4.62",
         "typing_extensions",
-        "torch>=2.0"
+        "torch>=2.0",
+        "scanpy>=1.9"
     ],
-    extras_require={
-        'recommend': ['scanpy>=1.9'],
-        'all': ['epipackpy[recommend]']
-    }
+    #extras_require={
+    #    'recommend': ['scanpy>=1.9'],
+    #    'all': ['epipackpy[recommend]']
+    #}
 )

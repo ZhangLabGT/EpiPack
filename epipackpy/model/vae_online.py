@@ -7,7 +7,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 from typing import Literal
 from sklearn.mixture import GaussianMixture
-from net import Encoder, EncoderAE, DecoderVAE, DecoderBinaryVAE, Pseudopoint_Layer, DecoderPoissonVAE
+from .net import Encoder, EncoderAE, DecoderVAE, DecoderBinaryVAE, Pseudopoint_Layer, DecoderPoissonVAE
 from .loss import mse_loss, maximum_mean_discrepancy_transfer,maximum_mean_discrepancy, NB, ZINB
 from tqdm import tqdm
 

@@ -1,0 +1,24 @@
+.wy-side-nav-search, .wy-nav-top {
+    background: #FFFFFF;
+}
+
+.wy-side-nav-search > a {
+	padding: 0;
+}
+
+.bd-toc {
+  display: none;
+}
+
+:root {
+  --pst-font-size-h1: 28px;
+  --pst-font-size-h2: 22px;
+  --pst-font-size-h3: 18px;
+  --pst-font-size-h4: 15px;
+
+  --pst-font-size-base: 15px;
+
+  --pst-sidebar-font-size: 16px;
+  --pst-sidebar-caption-font-size: 22px;
+
+}

@@ -1,5 +1,5 @@
 ## EpiPack
-EpiPack v 0.1.0
+EpiPack v 0.1.0dev1
 
 ### Description
 EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type annotation tool. Leveraging its heterogeneous domain adaptation framework, EpiPack is able to
@@ -16,6 +16,13 @@ EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type a
     sklearn >= 0.22.1
     numpy >= 1.21.6
     pandas >= 1.3.5
+```
+Note: For pytorch installation, we recommend users go to the pytorch portal to download based on their CUDA version.
+
+### Installation
+The package has been uploaded to PyPI. Users can download the package and dependent packages by:
+```
+    pip install epipackpy
 ```
 
 ## To-do-list

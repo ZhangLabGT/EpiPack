@@ -1,0 +1,5 @@
+# Defining the exact version will make sure things don't break
+sphinx==6.2.1
+sphinx_book_theme==1.0.1
+nbsphinx==0.9.3
+recommonmark==0.7.1

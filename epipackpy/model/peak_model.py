@@ -33,13 +33,13 @@ class Peak_Model(nn.Module):
     def __init__(self, 
                  count_enhancer, 
                  layer_num: int = 2, 
-                 batch_size: int = 128, 
+                 batch_size: int = 512, 
                  hidden_dim: int = 256, 
                  dropout_rate: float = 0.1, 
-                 z_dim: int = 64, 
+                 z_dim: int = 50, 
                  device: Literal['auto','gpu','cpu'] = 'auto',
                  lib_size: bool = True,
-                 region_factor: bool = True):
+                 region_factor: bool = False):
 
         super(Peak_Model, self).__init__()
  

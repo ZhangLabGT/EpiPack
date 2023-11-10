@@ -41,21 +41,21 @@ class VAE_MAPPING(nn.Module):
                  batch_id, 
                  ref_embedding,
                  layer_num = 2, 
-                 batch_size=128, 
+                 batch_size=256, 
                  hidden_dim=256, 
-                 dropout_rate = 0.1, 
-                 z_dim=64, 
-                 reg_mmd=1e-4,
-                 reg_mmd_inter = 1e-4, 
-                 reg_kl=1e-6,
+                 dropout_rate = 0, 
+                 z_dim=50, 
+                 reg_mmd=1,
+                 reg_mmd_inter = 0.1, 
+                 reg_kl=1e-10,
                  reg_rec=1,
-                 reg_z_l2=1,
+                 reg_z_l2=0.01,
                  prior = "standard", #['standard', 'GMM', 'VAMP']
                  n_center = 50,
                  n_pseudopoint = 300,
                  device: Literal['auto','gpu','cpu'] = 'auto',
-                 use_layer_norm: bool = True,
-                 use_batch_norm: bool = False):
+                 use_layer_norm: bool = False,
+                 use_batch_norm: bool = True):
 
         super().__init__()
 

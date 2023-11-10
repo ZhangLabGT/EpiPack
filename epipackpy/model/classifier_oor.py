@@ -56,7 +56,7 @@ class global_oor_query():
 
         return dist_mat_query
         
-    def annotate(self,k = 15, confidence_threshold = 0.1):
+    def annotate(self,k = 15, confidence_threshold = 1e-4):
         
         ###### primary classification
 

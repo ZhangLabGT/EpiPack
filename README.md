@@ -25,6 +25,10 @@ The package has been uploaded to PyPI. Users can download the package and depend
     pip install epipackpy
 ```
 
+### Tutorial
+
+Please checkout the documentations and tutorials at [epipack.readthedocs.io](https://epipack.readthedocs.io/).
+
 ## To-do-list
 
 - [x] Publish to pypi

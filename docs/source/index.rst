@@ -29,4 +29,4 @@ To get started with ``epipackpy``, check out the `installation guide <install.rs
    :maxdepth: 2
    :caption: Tutorials
 
-   clustering_test.ipynb
+   clustering_tutorial.ipynb

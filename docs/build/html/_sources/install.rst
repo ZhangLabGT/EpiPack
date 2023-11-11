@@ -16,4 +16,4 @@ The ``epipackpy`` package can be installed via pip using the following commands:
     `pytorch portal <https://pytorch.org/get-started/locally/>`__
     after checking the CUDA version by ``nvidia-smi``.
 
-Now you are all set. Refer to `tutorials <tutorials.rst>`__ for how to use the ``epipackpy`` package.
+Now you are all set. Refer to Tutorials for how to use the ``epipackpy`` package.

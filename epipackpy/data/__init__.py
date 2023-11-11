@@ -1,1 +1,1 @@
-from ..data.dataload import read_10x_h5, read_10x_mtx
+from ..data.dataload import read_10x_h5, read_10x_mtx, make_binary

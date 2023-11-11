@@ -1,5 +1,5 @@
 ## EpiPack
-EpiPack v 0.1.0dev1
+EpiPack v 0.1.0dev3
 
 ### Description
 EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type annotation tool. Leveraging its heterogeneous domain adaptation framework, EpiPack is able to

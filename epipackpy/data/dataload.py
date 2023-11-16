@@ -47,7 +47,8 @@ def make_binary(adata: AnnData):
 
 def add_fragment_file(adata, 
                       frag_path: PathLike, 
-                      genome:Literal ['Hg38','Hg19','mm39', 'mm10']):
+                      genome:Literal ['Hg38','Hg19','mm39', 'mm10'],
+                      remove_scaffold: bool):
     '''
     add fragment file to the peak anndata
     adata: peak anndata
@@ -113,6 +114,10 @@ def add_fragment_file(adata,
         gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://nov2020.archive.ensembl.org/')
     elif genome == 'mm39':
         gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://www.ensembl.org')
+
+    if remove_scaffold:
+        filter = df['Chromosome'].str.contains('CHR|GL|JH|MT|KI|HG')
+        df = df.filter(~filter)
 
     
     print('- Fragment dataframe constructed. Genome version:',genome)

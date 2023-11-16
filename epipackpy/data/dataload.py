@@ -49,7 +49,7 @@ def make_binary(adata: AnnData):
 
 def add_fragment_file(adata, 
                       frag_path: PathLike, 
-                      genome:Literal ['Hg38','Hg19','mm39', 'mm10'],
+                      genome:Literal ['Hg38','Hg19','mm39', 'mm10'] = "Hg38",
                       remove_scaffold: bool = True,
                       frag_size_dist: bool = True,
                       max_size: int = 800,
@@ -116,18 +116,22 @@ def add_fragment_file(adata,
                 )
     
     ## construct genome data
-    #if genome == 'Hg38':
-    #    gen_dataset = pbm.Dataset(name='hsapiens_gene_ensembl',  host='http://www.ensembl.org')
-    #elif genome == 'Hg19':
-    #    gen_dataset = pbm.Dataset(name='hsapiens_gene_ensembl',  host='http://grch37.ensembl.org/')
-    #elif genome == 'mm10':
-    #    gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://nov2020.archive.ensembl.org/')
-    #elif genome == 'mm39':
-    #    gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://www.ensembl.org')
+        if genome == 'Hg38':
+            FLT = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y"
+        #    gen_dataset = pbm.Dataset(name='hsapiens_gene_ensembl',  host='http://www.ensembl.org')
+        elif genome == 'Hg19':
+            FLT = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|X|Y"
+        #    gen_dataset = pbm.Dataset(name='hsapiens_gene_ensembl',  host='http://grch37.ensembl.org/')
+        elif genome == 'mm10':
+            FLT = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|X|Y"
+        #    gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://nov2020.archive.ensembl.org/')
+        elif genome == 'mm39':
+            FLT = "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|X|Y"
+        #    gen_dataset = pbm.Dataset(name='mmusculus_gene_ensembl',  host='http://www.ensembl.org')
 
         if remove_scaffold:
-            filter = df['Chromosome'].str.contains('CHR|GL|JH|MT|KI|HG')
-            df = df.filter(~filter)
+            filter = df['Chromosome'].str.contains(FLT)
+            df = df.filter(filter)
 
         adata.uns['fragment'] = {'file':df, 'path': frag_path, 'genome': genome}
     
@@ -151,12 +155,12 @@ def add_fragment_file(adata,
             sns.lineplot(data=frag_width_dict[frag_width_dict['Width'] < max_size], x='Width', y='Count')
             plt.xlabel("Size of Fragments (bp)")
             plt.ylabel("Count")
-            plt.show()
             
             if add_key:
                 adata.uns['fragment']['frag_dist'] = frag_width_dict
 
             print("- Done!")
+            plt.show()
             
 
     return adata

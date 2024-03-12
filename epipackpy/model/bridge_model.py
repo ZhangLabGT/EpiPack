@@ -288,11 +288,12 @@ class BridgeVAE(nn.Module):
 
         
     def train_model(self, 
-                    nepochs = 50, 
+                    nepochs = 200, 
                     clamp = 0.0, 
                     weight_decay:float = 5e-4, 
                     learning_rate:float = 1e-4,
-                    rec_loss="MSE"):
+                    rec_loss="MSE",
+                    pre_train_epoch = 100):
 
         self.train()
         self.optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -317,8 +318,11 @@ class BridgeVAE(nn.Module):
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
                                                                         rec_type=rec_loss)
-
-                loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
+                
+                if epoch<pre_train_epoch:
+                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
+                else:
+                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + 0*loss_mmd
                 self.optimizer.zero_grad()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.parameters(), 10)

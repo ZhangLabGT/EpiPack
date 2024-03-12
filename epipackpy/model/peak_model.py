@@ -39,7 +39,8 @@ class Peak_Model(nn.Module):
                  z_dim: int = 50, 
                  device: Literal['auto','gpu','cpu'] = 'auto',
                  lib_size: bool = True,
-                 region_factor: bool = False):
+                 region_factor: bool = False,
+                 denosing: bool = False):
 
         super(Peak_Model, self).__init__()
  
@@ -52,6 +53,7 @@ class Peak_Model(nn.Module):
         self.device = device
         self.lib_size = lib_size
         self.region_factor = region_factor
+        self.denoising = denosing
 
         print("- Model initializing...")
 
@@ -68,6 +70,11 @@ class Peak_Model(nn.Module):
         elif self.device == 'cpu':
             self.device_use = torch.device("cpu")
             print("- [Manually setting]: Model will be initialized in CPU mode.")
+
+        ## adding noise
+        if self.denoising is True:
+            self.enhancer_count = self.enhancer_count + 0.2*torch.randn_like(self.enhancer_count)
+            self.enhancer_count = torch.clamp(self.enhancer_count, 0., 1.)
 
         ## promoter encoder
         self.Encoder = EncoderAE(
@@ -90,7 +97,7 @@ class Peak_Model(nn.Module):
             use_batch_norm=False
         ).to(self.device_use)
         
-        self.train_dataset = peak_dataset(counts_enhancer = count_enhancer)
+        self.train_dataset = peak_dataset(counts_enhancer = self.count_enhancer)
         self.train_loader = DataLoader(dataset = self.train_dataset, batch_size = self.batch_size, shuffle = True)
         cutoff = 3000
         if len(self.train_dataset) > cutoff:

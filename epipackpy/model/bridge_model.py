@@ -320,9 +320,9 @@ class BridgeVAE(nn.Module):
                                                                         rec_type=rec_loss)
                 
                 if epoch<pre_train_epoch:
-                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
-                else:
                     loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + 0*loss_mmd
+                else:
+                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
                 self.optimizer.zero_grad()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.parameters(), 10)

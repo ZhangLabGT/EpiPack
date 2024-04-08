@@ -5,11 +5,10 @@ from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 from typing import Literal
 from tqdm import tqdm
-from .net import classifier_layer, CosCell, InnerCos, InnerCosLoss, CenterLoss
+from .net import classifier_layer, CosCell, ArcCell, CenterLoss
 from sklearn.model_selection import train_test_split
 import torch.nn.functional as F
-from .loss import contrastive_loss
-from .utils import cosine_dist
+import torch.utils.data as Data
 
 
 class classifier_dataset(Dataset):
@@ -39,7 +38,6 @@ class Classifier(nn.Module):
     def __init__(self, 
                  ref_latent_emb,  
                  ref_label,
-                 class_num,
                  hidden_num,
                  z_dim: int = 30,  
                  dropout_rate: float = 0.1,
@@ -52,7 +50,6 @@ class Classifier(nn.Module):
  
         self.ref_latent_emb = ref_latent_emb
         self.ref_label = ref_label
-        self.class_num = class_num
         self.hidden_num = hidden_num
         self.batch_size = batch_size
         self.layer_num = layer_num
@@ -60,6 +57,8 @@ class Classifier(nn.Module):
         self.z_dim = z_dim
         self.device = device
         self.batchnorm = batchnorm
+
+        self.class_num = len(np.unique(self.ref_label))
 
         print("- Classifier initializing...")
 
@@ -90,7 +89,8 @@ class Classifier(nn.Module):
             use_batch_norm = self.batchnorm
             ).to(self.device_use)
 
-        #self.Coscell = CosCell(self.z_dim, self.class_num).to(self.device_use)
+        self.Coscell = CosCell(self.z_dim, self.class_num).to(self.device_use)
+        #self.Coscell = ArcCell(self.z_dim, self.class_num).to(self.device_use)
         #self.Coscell = nn.Linear(self.z_dim, self.class_num).to(self.device_use)
 
         self.class_mu = []
@@ -104,7 +104,15 @@ class Classifier(nn.Module):
         #X_train, X_test, y_train, y_test = train_test_split(self.ref_latent_emb, self.ref_label, test_size = 0.2, stratify=self.ref_label)
         self.train_dataset = classifier_dataset(self.ref_latent_emb, self.ref_label, train=True)
         #self.test_dataset = classifier_dataset(X_test, y_test, train=False)
-        self.train_loader = DataLoader(dataset = self.train_dataset, batch_size = self.batch_size, shuffle = True)
+
+        ## balancing
+        class_sample_count = torch.tensor([(self.ref_label == t).sum() for t in np.unique(self.ref_label)])
+
+        weight = 1. / class_sample_count.float()
+        samples_weight = torch.tensor([weight[t] for t in self.ref_label])
+        samplr = Data.WeightedRandomSampler(samples_weight, len(samples_weight))
+
+        self.train_loader = DataLoader(dataset = self.train_dataset, batch_size = self.batch_size, sampler = samplr)
         #self.test_loader = DataLoader(dataset=self.test_dataset, batch_size=len(self.test_dataset), shuffle=False)
 
         print("- Classifier intialization completed.")
@@ -112,57 +120,59 @@ class Classifier(nn.Module):
     def inference(self, x):
 
         out = self.Encoder(x)
-        #z = self.Coscell(out)
+        z = self.Coscell(out)
         
-        return{"cls_latent": out}
+        return{"cls_latent": out, "class_z": z}
             
     
     def train_model(self, 
                     nepochs:int = 50, 
                     weight_decay:float = 5e-4, 
                     learning_rate:float = 1e-4,
-                    #inner_reg:float = 1,
-                    optim: Literal = ['Adam', 'SGD']):
+                    inner_reg:float = 1):
+                    #optim: Literal = ['Adam', 'SGD']):
         
         self.train()
         
-        #criterion = torch.nn.CrossEntropyLoss().to(self.device_use)
-        #self.criterion_inner = CenterLoss(self.class_num, self.z_dim).to(self.device_use)
+        criterion = torch.nn.CrossEntropyLoss().to(self.device_use)
+        self.criterion_inner = CenterLoss(self.class_num, self.z_dim, center_init=self.class_mu, device=self.device_use).to(self.device_use)
 
         #optimizer_main = torch.optim.Adam(self.Encoder.parameters(), lr=learning_rate, weight_decay=weight_decay)
         #optimizer_inter = torch.optim.Adam(self.Coscell.parameters(), lr=learning_rate, weight_decay=weight_decay)
-        if optim == 'Adam':
-            self.optimizer = torch.optim.Adam(self.Encoder.parameters(),
+        
+        #if optim == 'Adam':
+        self.optimizer = torch.optim.Adam([{'params': self.Encoder.parameters()}, {'params': self.Coscell.parameters()}],
                                 lr=learning_rate,
                                 weight_decay=weight_decay)
-            #self.optimizer_inner  = torch.optim.Adam(self.criterion_inner.parameters(),
-            #                    lr=learning_rate,
-            #                    weight_decay=weight_decay)
-        elif optim == 'SGD':
-            self.optimizer = torch.optim.SGD([{'params': self.Encoder.parameters()}, {'params': self.Coscell.parameters()}],
+        self.optimizer_inner  = torch.optim.Adam(self.criterion_inner.parameters(),
                                 lr=learning_rate,
-                                momentum=0.9,
                                 weight_decay=weight_decay)
-            #self.optimizer_inner  = torch.optim.SGD(self.criterion_inner.parameters(),
-            #                    lr=learning_rate,
-            #                    momentum=0.9,
-            #                    weight_decay=weight_decay)
+        #elif optim == 'SGD':
+        #    self.optimizer = torch.optim.SGD([{'params': self.Encoder.parameters()}, {'params': self.Coscell.parameters()}],
+        #                        lr=learning_rate,
+        #                        momentum=0.9,
+        #                        weight_decay=weight_decay)
+        #    self.optimizer_inner  = torch.optim.SGD(self.criterion_inner.parameters(),
+        #                        lr=learning_rate,
+        #                        momentum=0.9,
+        #                        weight_decay=weight_decay)
 
         loop = tqdm(range(nepochs), total=nepochs, desc="Epochs")
+        
         for epoch in loop:
             for id, x in enumerate(self.train_loader):
                 
                 dict_inf = self.inference(x['ref_emb'].to(self.device_use))
 
-                loss = contrastive_loss(dict_inf['cls_latent'], x["ref_label"].long().to(self.device_use))
-                #loss_inner = self.criterion_inner(dict_inf['cls_latent'], x["ref_label"].long().to(self.device_use))
-                #loss_inner = inner_reg
+                #loss = contrastive_loss(dict_inf['cls_latent'], x["ref_label"].long().to(self.device_use))
+                loss_inner = self.criterion_inner(dict_inf['cls_latent'], x["ref_label"].long().to(self.device_use))
+                loss_inter = criterion(dict_inf['class_z'], x["ref_label"].long().to(self.device_use))
 
-                #loss = loss_inter + inner_reg*loss_inner
+                loss = loss_inter + inner_reg*loss_inner
 
                 # Backward and optimize
                 self.optimizer.zero_grad()
-                #self.optimizer_inner.zero_grad()
+                self.optimizer_inner.zero_grad()
                 loss.backward()
                 nn.utils.clip_grad_norm_(self.parameters(), 10)
                 self.optimizer.step()
@@ -170,7 +180,7 @@ class Classifier(nn.Module):
                 #for param in self.criterion_inner.parameters():
                 #    param.grad.data *= (1. / inner_reg)
 
-                #self.optimizer_inner.step()
+                self.optimizer_inner.step()
 
                 #if id == (interval_num-1):
                 #    print("epoch:{}/{}, train_bce:{}".format(epoch, nepochs, loss))
@@ -180,17 +190,23 @@ class Classifier(nn.Module):
             #    for id, x in enumerate(self.test_loader):
 
             #        dict_inf = self.inference(x['ref_emb'].to(self.device_use))
-            #        loss_test= criterion(dict_inf['logit'], x["ref_label"].long().to(self.device_use))
+            #        loss_inner_test = self.criterion_inner(dict_inf['cls_latent'], x["ref_label"].long().to(self.device_use))
+            #        loss_inter_test = criterion(dict_inf['class_z'], x["ref_label"].long().to(self.device_use))
 
-            #loop.set_postfix(loss_inter = loss_inter.item(), loss_inner = loss_inner.item())
-            loop.set_postfix(loss_inter = loss.item())
+            loop.set_postfix(loss_inter_val = loss_inter.item(), loss_inner_val = loss_inner.item())
+            #loop.set_postfix(loss_inter = loss.item())
 
         
     def get_z(self, input):
         self.eval()
         z_latent = self.inference(torch.FloatTensor(input).to(self.device_use))
 
-        return z_latent
+        temp = F.softmax(z_latent['class_z'], dim=1)
+        pred = torch.argmax(temp, dim=1).cpu()
+
+        result = list(pred.numpy()) 
+
+        return result, z_latent['cls_latent']
     
     #def get_dis(self, input):
     #    query_emb = torch.FloatTensor(input).to(self.device_use)

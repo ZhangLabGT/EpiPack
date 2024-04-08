@@ -4,6 +4,7 @@ from torch import nn as nn
 import collections
 import torch.nn.functional as F
 from .utils import cosine_dist
+import math
 
 def identity(x):
     return x
@@ -412,7 +413,7 @@ class classifier_layer(nn.Module):
         n_output: int,
         n_cat_list: Iterable[int] = None,
         n_layers: int = 1,
-        n_hidden: int = 50,
+        n_hidden: int = 64,
         dropout_rate: float = 0.1,
         inject_covariates: bool = False,
         use_batch_norm: bool = False,
@@ -432,7 +433,7 @@ class classifier_layer(nn.Module):
             use_layer_norm=use_layer_norm,
             use_activation=True,
             bias=True,
-            activation_fn=nn.LeakyReLU,
+            activation_fn=nn.ReLU,
         )
 
         self.mean_layer = nn.Linear(n_hidden, n_output)
@@ -489,6 +490,47 @@ class CosCell(nn.Module):
     def forward(self, input):
         cosine = F.linear(F.normalize(input), F.normalize(self.weight))
         output = self.s * cosine
+
+        return output
+
+class ArcCell(nn.Module):
+    r"""Implement of large margin arc distance: :
+        Args:
+            in_features: size of each input sample
+            out_features: size of each output sample
+            s: norm of input feature
+            m: margin
+
+            cos(theta + m)
+        """
+    def __init__(self, in_features, out_features, s=30.0, m=0.50):
+        super(ArcCell, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.s = s
+        self.m = m
+        self.weight = nn.Parameter(torch.FloatTensor(out_features, in_features))
+        nn.init.xavier_uniform_(self.weight)
+
+        self.cos_m = math.cos(m)
+        self.sin_m = math.sin(m)
+        self.th = math.cos(math.pi - m)
+        self.mm = math.sin(math.pi - m) * m
+
+    def forward(self, input, label, device):
+        # --------------------------- cos(theta) & phi(theta) ---------------------------
+        cosine = F.linear(F.normalize(input), F.normalize(self.weight))
+        sine = torch.sqrt((1.0 - torch.pow(cosine, 2)).clamp(0, 1))
+        phi = cosine * self.cos_m - sine * self.sin_m
+
+        phi = torch.where(cosine > self.th, phi, cosine - self.mm)
+        # --------------------------- convert label to one-hot ---------------------------
+        # one_hot = torch.zeros(cosine.size(), requires_grad=True, device='cuda')
+        one_hot = torch.zeros(cosine.size(), device=device)
+        one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+        # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
+        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)  # you can use torch.where if your torch.__version__ is 0.4
+        output *= self.s
 
         return output
     
@@ -550,13 +592,14 @@ class CenterLoss(nn.Module):
         num_classes (int): number of classes.
         feat_dim (int): feature dimension.
     """
-    def __init__(self, num_classes=10, feat_dim=2, center_init=None):
+    def __init__(self, num_classes=10, feat_dim=2, center_init=None, device=None):
         super(CenterLoss, self).__init__()
         self.num_classes = num_classes
         self.feat_dim = feat_dim
+        self.device = device
 
         self.centers = nn.Parameter(torch.zeros(self.num_classes, self.feat_dim), requires_grad=True)
-        self.centers.data = torch.from_numpy(center_init).float()
+        #self.centers.data = torch.from_numpy(center_init).float()
 
     def forward(self, x, labels):
         """
@@ -564,30 +607,20 @@ class CenterLoss(nn.Module):
             x: feature matrix with shape (batch_size, feat_dim).
             labels: ground truth labels with shape (batch_size).
         """
-        batch_size = x.size(0)
 
-        ##inner
+        batch_size = x.size(0)
         distmat = torch.pow(x, 2).sum(dim=1, keepdim=True).expand(batch_size, self.num_classes) + \
                   torch.pow(self.centers, 2).sum(dim=1, keepdim=True).expand(self.num_classes, batch_size).t()
-        distmat.addmm_(self.centers, self.centers.t(), beta=1, alpha=-2)
-        
-        ##center
-        distmat = torch.pow(self.centers, 2).sum(dim=1, keepdim=True).expand(batch_size, self.num_classes) + \
-                  torch.pow(self.centers, 2).sum(dim=1, keepdim=True).expand(self.num_classes, batch_size).t()
-        distmat.addmm_(self.centers, self.centers.t(), beta=1, alpha=-2)
+        distmat.addmm_(x, self.centers.t(), beta=1, alpha=-2)
 
-        classes = torch.arange(self.num_classes).long()
+        classes = torch.arange(self.num_classes).long().to(self.device)
         labels = labels.unsqueeze(1).expand(batch_size, self.num_classes)
-        mask_in = labels.eq(classes.expand(batch_size, self.num_classes))
-        mask_out = labels.ne(classes.expand(batch_size, self.num_classes))
+        mask = labels.eq(classes.expand(batch_size, self.num_classes))
 
-        dist_in = distmat * mask_in.float()
-        loss_inner = dist_in.clamp(min=1e-12, max=1e+12).sum() / batch_size
-        
-        dist_out = distmat * mask_out.float()
-        loss_inter = dist_out.clamp(min=1e-12, max=1e+12).sum() / batch_size
+        dist = distmat * mask.float()
+        loss = dist.clamp(min=1e-12, max=1e+12).sum() / batch_size
 
-        return loss_inner, loss_inter
+        return loss
     
 ######################################
 #         Decoder materials          #

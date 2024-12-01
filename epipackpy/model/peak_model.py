@@ -98,6 +98,8 @@ class Peak_Model(nn.Module):
         if len(self.train_dataset) > cutoff:
             sample_test = torch.randperm(n = len(self.train_dataset))[:cutoff]
             test_dataset = Subset(self.train_dataset, sample_test)
+        else:
+            test_dataset = self.train_dataset
         self.test_loader = DataLoader(dataset = test_dataset, batch_size = len(test_dataset), shuffle = False)
 
         if self.region_factor:

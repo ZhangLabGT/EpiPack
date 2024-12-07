@@ -335,6 +335,7 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
+                                                                        size_factor=x['size_factor'],
                                                                         rec_type=rec_loss)
                 
                 if epoch<pre_train_epoch:
@@ -373,6 +374,7 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
+                                                                        size_factor=x['size_factor'],
                                                                         rec_type=rec_loss)
                         
                     #loss_test = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd

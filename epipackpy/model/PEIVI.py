@@ -287,7 +287,7 @@ class PEIVI(nn.Module):
             loss_rec = mse_loss(rec_rate, count.to(self.device_use))
         elif rec_type == 'NB':
             #rec_rate = rec['rec_promoter']*lib_size
-            loss_rec = NB(theta=rec['theta'], scale_factor=size_factor, device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec_rate['rec_promoter'])
+            loss_rec = NB(theta=rec['theta'], scale_factor=size_factor, device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec['rec_promoter'])
         elif rec_type == 'ZINB':
             lamb_pi = 1e-5
             rec_rate = rec['rec_promoter']*lib_size

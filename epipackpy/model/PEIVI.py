@@ -20,24 +20,31 @@ class model_dataset2(Dataset):
         assert not len(counts_promoter) == 0, "Lack of the promoter matrix"
         assert not len(batch_id) == 0, "Lack of the batch id set"
 
+        size_factor = np.tile(np.sum(counts_promoter, axis = 1, keepdims = True), (1, counts_promoter.shape[1]))/100
+
         self.counts_promoter = torch.FloatTensor(counts_promoter)
         self.z_enhancer = torch.FloatTensor(z_enhancer)
         self.batch_id = torch.IntTensor(batch_id)
+        self.size_factor = torch.FloatTensor(size_factor)
     
     def __len__(self):
         return self.counts_promoter.shape[0]
 
     def __getitem__(self, idx):
-        sample = {'promoter': self.counts_promoter[idx,:], 'enhancer': self.z_enhancer[idx,:], 'batch_id': self.batch_id[idx]}
+        sample = {'promoter': self.counts_promoter[idx,:], 
+                  'enhancer': self.z_enhancer[idx,:], 
+                  'batch_id': self.batch_id[idx],
+                  'size_factor': self.size_factor[idx]}
+        
         return sample
 
 
-class BridgeVAE(nn.Module):
+class PEIVI(nn.Module):
     '''
     This test model is for VAE GENE SCORE REGULARIZED BY PEAK EMBEDDING
     '''
-    def __init__(self, promoter_dt, 
-                 enhancer_z, 
+    def __init__(self, count, 
+                 peak_emb, 
                  batch_id, 
                  layer_num = 2, 
                  batch_size=512, 
@@ -57,8 +64,8 @@ class BridgeVAE(nn.Module):
 
         super().__init__()
 
-        self.promoter_dt = promoter_dt
-        self.enhancer_z = enhancer_z
+        self.promoter_dt = count
+        self.enhancer_z = peak_emb
         self.batch_id = batch_id
         self.batch_size = batch_size
         self.hidden_dim = hidden_dim
@@ -118,7 +125,7 @@ class BridgeVAE(nn.Module):
                                  ).to(self.device_use)       
 
         
-        self.train_dataset = model_dataset2(counts_promoter = promoter_dt, z_enhancer = enhancer_z, batch_id = batch_id)
+        self.train_dataset = model_dataset2(counts_promoter = self.promoter_dt, z_enhancer = self.enhancer_z, batch_id = batch_id)
         self.train_loader = DataLoader(dataset = self.train_dataset, batch_size = self.batch_size, shuffle = True)
 
         ## cut off test dataset scale
@@ -126,6 +133,8 @@ class BridgeVAE(nn.Module):
         if len(self.train_dataset) > cutoff:
             sample_test = torch.randperm(n = len(self.train_dataset))[:cutoff]
             test_dataset = Subset(self.train_dataset, sample_test)
+        else:
+            test_dataset = self.train_dataset
         self.test_loader = DataLoader(dataset = test_dataset, batch_size = len(test_dataset), shuffle = False)
 
         
@@ -169,7 +178,7 @@ class BridgeVAE(nn.Module):
         eps = Variable(eps).to(self.device_use)
         return eps.mul(std).add_(mu)
 
-    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.0, eval=False, print_stat = False):
+    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.01, eval=False, print_stat = False):
 
         #check batch id size
         assert m_promoter.shape[0] == batch_id.shape[0]
@@ -221,7 +230,15 @@ class BridgeVAE(nn.Module):
         return gamma
     
     
-    def loss(self, dict_inf = None, count= None, rec= None, batch_id = None, count_eh = None, lib_size = 1, rec_type = 'MSE'):
+    def loss(self, 
+             dict_inf = None, 
+             count= None, 
+             rec= None, 
+             batch_id = None, 
+             count_eh = None, 
+             lib_size = 1, 
+             size_factor = None,
+             rec_type = 'MSE'):
         '''
         Loss #1 + #2 = ELBO
         Loss #3 for regularization of the latent space z between "gene score" and "peak"
@@ -269,8 +286,8 @@ class BridgeVAE(nn.Module):
             rec_rate = rec['rec_promoter']*lib_size
             loss_rec = mse_loss(rec_rate, count.to(self.device_use))
         elif rec_type == 'NB':
-            rec_rate = rec['rec_promoter']*lib_size
-            loss_rec = NB(theta=rec['theta'], device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec_rate)
+            #rec_rate = rec['rec_promoter']*lib_size
+            loss_rec = NB(theta=rec['theta'], scale_factor=size_factor, device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec_rate['rec_promoter'])
         elif rec_type == 'ZINB':
             lamb_pi = 1e-5
             rec_rate = rec['rec_promoter']*lib_size
@@ -289,7 +306,7 @@ class BridgeVAE(nn.Module):
         
     def train_model(self, 
                     nepochs = 200, 
-                    clamp = 0.0, 
+                    clamp = 0.01, 
                     weight_decay:float = 5e-4, 
                     learning_rate:float = 1e-4,
                     rec_loss="MSE",
@@ -304,7 +321,8 @@ class BridgeVAE(nn.Module):
 
                 #pass encoder
                 dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
-                                          batch_id=x['batch_id'][:,None].to(self.device_use))
+                                          batch_id=x['batch_id'][:,None].to(self.device_use),
+                                          clamp_promoter=clamp)
                 
                 #reconstruct gene score
                 dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -380,7 +398,7 @@ class BridgeVAE(nn.Module):
 
         self.eval()
 
-        dict_inf = self.inference(m_promoter = torch.FloatTensor(self.promoter_dt).to(self.device_use), 
-                                  batch_id=torch.FloatTensor(self.batch_id)[:,None].to(self.device_use))
+        dict_inf = self.inference(m_promoter = self.train_dataset.counts_promoter.to(self.device_use), 
+                                  batch_id=self.train_dataset.batch_id[:,None].to(self.device_use))
 
-        return dict_inf['z_p'].cpu()
+        return dict_inf['z_p'].detach().cpu().numpy()

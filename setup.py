@@ -36,7 +36,6 @@ setup(
         "tqdm>=4.62",
         "typing_extensions",
         "torch>=2.0",
-        "scanpy>=1.9",
         "polars>=0.19",
         "pyarrow>=14.0",
         "pybiomart>=0.2.0",

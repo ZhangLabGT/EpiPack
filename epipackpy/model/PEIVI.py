@@ -55,6 +55,7 @@ class PEIVI(nn.Module):
                  reg_kl=1e-10,
                  reg_rec=1,
                  reg_z_l2=0.1,
+                 reg_z_l2_2 = 0,
                  prior = "standard", #['standard', 'GMM', 'VAMP']
                  n_center = 50,
                  n_pseudopoint = 300,
@@ -80,8 +81,8 @@ class PEIVI(nn.Module):
         self.use_batch_norm = use_batch_norm
 
         # regularization parameters
-        self.reg = {"mmd": reg_mmd, "kl": reg_kl, "rec": reg_rec, "z_l2": reg_z_l2} #epoch zone 1
-                    #"mmd_2": reg_mmd_2, "rec_2": reg_rec_2, "z_l2_2": reg_z_l2_2} #epoch zone 2
+        self.reg = {"mmd": reg_mmd, "kl": reg_kl, "rec": reg_rec, "z_l2": reg_z_l2, "z_l2_2": reg_z_l2_2} #epoch zone 1
+                    #"mmd_2": reg_mmd_2, "rec_2": reg_rec_2, } #epoch zone 2
 
         # Batch number: batch id should be a numpy list
         self.uniq_batch_id = [i for i in np.unique(batch_id)]
@@ -335,13 +336,13 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        size_factor=x['size_factor'],
+                                                                        size_factor=x['size_factor'].to(self.device_use),
                                                                         rec_type=rec_loss)
                 
                 if epoch<pre_train_epoch:
                     loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + 0*loss_mmd
                 else:
-                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
+                    loss = self.reg['rec']*loss_promoter + self.reg['z_l2_2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
                 self.optimizer.zero_grad()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.parameters(), 10)
@@ -374,7 +375,7 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        size_factor=x['size_factor'],
+                                                                        size_factor=x['size_factor'].to(self.device_use),
                                                                         rec_type=rec_loss)
                         
                     #loss_test = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd

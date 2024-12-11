@@ -325,7 +325,7 @@ class PEIVI(nn.Module):
                 #pass encoder
                 dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
                                           batch_id=x['batch_id'][:,None].to(self.device_use),
-                                          clamp_promoter=clamp)
+                                          clamp_promoter=clamp, rec_type=rec_loss)
                 
                 #reconstruct gene score
                 dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -364,7 +364,7 @@ class PEIVI(nn.Module):
 
                     #pass encoder
                     dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
-                                            batch_id=x['batch_id'][:,None].to(self.device_use))
+                                            batch_id=x['batch_id'][:,None].to(self.device_use), rec_type=rec_loss)
                 
                     #reconstruct gene score
                     dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 

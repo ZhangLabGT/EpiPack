@@ -10,8 +10,8 @@ def mse_loss(decoder_out, x):
     decoder_out: Output of the decoder
     x: original matrix
     '''
-    loss_rl = nn.MSELoss()
-    result_mse = loss_rl(decoder_out, x)
+    loss_rl = nn.MSELoss(reduction='none')
+    result_mse = loss_rl(decoder_out, x).sum(dim=-1)
 
     return result_mse
 
@@ -116,7 +116,7 @@ def _nan2zero(x):
     return torch.where(torch.isnan(x), torch.zeros_like(x), x)
 
 def _nelem(x):
-    nelem = torch.reduce_sum(torch.float(~torch.isnan(x), torch.float32))
+    nelem = torch.sum(torch.float(~torch.isnan(x), torch.float32))
     return torch.float(torch.where(torch.equal(nelem, 0.), 1., nelem), x.dtype)
 
 def _reduce_mean(x):
@@ -182,7 +182,7 @@ class NB():
 
         if mean:
             if self.masking:
-                final = torch.divide(torch.reduce_sum(final), nelem)
+                final = torch.divide(torch.sum(final), nelem)
             else:
                 final = torch.mean(final)
 

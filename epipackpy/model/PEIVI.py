@@ -179,7 +179,7 @@ class PEIVI(nn.Module):
         eps = Variable(eps).to(self.device_use)
         return eps.mul(std).add_(mu)
 
-    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.01, eval=False, print_stat = False):
+    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.01, eval=False, print_stat = False, rec_type=None):
 
         #check batch id size
         assert m_promoter.shape[0] == batch_id.shape[0]
@@ -187,6 +187,8 @@ class PEIVI(nn.Module):
         library = torch.log(m_promoter.sum(1)).unsqueeze(1)
         #library = torch.ones(_library.shape)
         x_ = torch.log(1 + m_promoter)
+        if rec_type=="MSE":
+            x_ = m_promoter
 
         mu_p, logvar_p = self.Encoder(x_, batch_id)
 
@@ -284,7 +286,7 @@ class PEIVI(nn.Module):
 
         #2. promoter rec loss
         if rec_type == 'MSE':
-            rec_rate = rec['rec_promoter']*lib_size
+            rec_rate = rec['rec_promoter']
             loss_rec = mse_loss(rec_rate, count.to(self.device_use))
         elif rec_type == 'NB':
             #rec_rate = rec['rec_promoter']*lib_size

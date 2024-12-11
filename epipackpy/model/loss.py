@@ -11,7 +11,7 @@ def mse_loss(decoder_out, x):
     x: original matrix
     '''
     loss_rl = nn.MSELoss(reduction='none')
-    result_mse = loss_rl(decoder_out, x).sum(dim=-1)
+    result_mse = loss_rl(decoder_out, x).sum(dim=-1).mean()
 
     return result_mse
 

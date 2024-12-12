@@ -35,13 +35,3 @@ def query_model_initial(query_model = None, ref_model_param = None, query_batch_
             v.requires_grad = False
 
     return query_model
-    
-
-
-def cosine_dist(x1, x2, dim=1, eps=1e-8):
-    ip = torch.mm(x1, x2.t())
-    w1 = torch.norm(x1, 2, dim)
-    w2 = torch.norm(x2, 2, dim)
-    return 1 - ip / torch.ger(w1,w2).clamp(min=eps)
-
-    

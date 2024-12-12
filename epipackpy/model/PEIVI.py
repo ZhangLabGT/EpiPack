@@ -61,7 +61,8 @@ class PEIVI(nn.Module):
                  n_pseudopoint = 300,
                  device: Literal['auto','gpu','cpu'] = 'auto',
                  use_layer_norm: bool = False,
-                 use_batch_norm: bool = True):
+                 use_batch_norm: bool = True,
+                 rec_type: Literal['MSE','NB'] = 'MSE'):
 
         super().__init__()
 
@@ -79,6 +80,7 @@ class PEIVI(nn.Module):
         self.device = device
         self.use_layer_norm = use_layer_norm
         self.use_batch_norm = use_batch_norm
+        self.rec_type = rec_type
 
         # regularization parameters
         self.reg = {"mmd": reg_mmd, "kl": reg_kl, "rec": reg_rec, "z_l2": reg_z_l2, "z_l2_2": reg_z_l2_2} #epoch zone 1
@@ -179,16 +181,16 @@ class PEIVI(nn.Module):
         eps = Variable(eps).to(self.device_use)
         return eps.mul(std).add_(mu)
 
-    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.01, eval=False, print_stat = False, rec_type=None):
+    def inference(self, m_promoter, batch_id = None, clamp_promoter = 0.01, eval=False, print_stat = False):
 
         #check batch id size
         assert m_promoter.shape[0] == batch_id.shape[0]
 
         library = torch.log(m_promoter.sum(1)).unsqueeze(1)
         #library = torch.ones(_library.shape)
-        x_ = torch.log(1 + m_promoter)
-        if rec_type=="MSE":
-            x_ = m_promoter
+        x_ = m_promoter
+        if self.rec_type=="NB":
+            x_ = torch.log(1 + m_promoter)
 
         mu_p, logvar_p = self.Encoder(x_, batch_id)
 
@@ -240,8 +242,7 @@ class PEIVI(nn.Module):
              batch_id = None, 
              count_eh = None, 
              lib_size = 1, 
-             size_factor = None,
-             rec_type = 'MSE'):
+             size_factor = None):
         '''
         Loss #1 + #2 = ELBO
         Loss #3 for regularization of the latent space z between "gene score" and "peak"
@@ -285,18 +286,18 @@ class PEIVI(nn.Module):
             kl_div = torch.sum(kl)/self.batch_size
 
         #2. promoter rec loss
-        if rec_type == 'MSE':
+        if self.rec_type == 'MSE':
             rec_rate = rec['rec_promoter']
             loss_rec = mse_loss(rec_rate, count.to(self.device_use))
-        elif rec_type == 'NB':
+        elif self.rec_type == 'NB':
             #rec_rate = rec['rec_promoter']*lib_size
             loss_rec = NB(theta=rec['theta'], scale_factor=size_factor, device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec['rec_promoter'])
-        elif rec_type == 'ZINB':
+        elif self.rec_type == 'ZINB':
             lamb_pi = 1e-5
             rec_rate = rec['rec_promoter']*lib_size
             loss_rec = ZINB(pi = rec["pi"], theta = rec["theta"], ridge_lambda = lamb_pi).loss(y_true=count.to(self.device_use), y_pred=rec_rate)
         else:
-            raise ValueError("recon_loss can only be 'ZINB', 'NB', and 'MSE'")
+            raise ValueError("recon_loss can only be 'NB', and 'MSE'")
 
         #3. promoter z L2 loss
         loss_z_l2 = mse_loss(dict_inf['z_p'], count_eh)
@@ -312,7 +313,6 @@ class PEIVI(nn.Module):
                     clamp = 0.01, 
                     weight_decay:float = 5e-4, 
                     learning_rate:float = 1e-4,
-                    rec_loss="MSE",
                     pre_train_epoch = 100):
 
         self.train()
@@ -325,7 +325,7 @@ class PEIVI(nn.Module):
                 #pass encoder
                 dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
                                           batch_id=x['batch_id'][:,None].to(self.device_use),
-                                          clamp_promoter=clamp, rec_type=rec_loss)
+                                          clamp_promoter=clamp)
                 
                 #reconstruct gene score
                 dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -338,8 +338,7 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        size_factor=x['size_factor'].to(self.device_use),
-                                                                        rec_type=rec_loss)
+                                                                        size_factor=x['size_factor'].to(self.device_use))
                 
                 if epoch<pre_train_epoch:
                     loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + 0*loss_mmd
@@ -364,7 +363,8 @@ class PEIVI(nn.Module):
 
                     #pass encoder
                     dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
-                                            batch_id=x['batch_id'][:,None].to(self.device_use), rec_type=rec_loss)
+                                            batch_id=x['batch_id'][:,None].to(self.device_use),
+                                            clamp_promoter=clamp)
                 
                     #reconstruct gene score
                     dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -377,8 +377,7 @@ class PEIVI(nn.Module):
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
                                                                         lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        size_factor=x['size_factor'].to(self.device_use),
-                                                                        rec_type=rec_loss)
+                                                                        size_factor=x['size_factor'].to(self.device_use))
                         
                     #loss_test = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
 

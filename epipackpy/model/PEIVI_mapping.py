@@ -32,7 +32,7 @@ class model_dataset2(Dataset):
         return sample
 
 
-class VAE_MAPPING(nn.Module):
+class PEIVI_MAPPING(nn.Module):
     '''
     This test model is for VAE GENE SCORE REGULARIZED BY PEAK EMBEDDING
     '''
@@ -55,7 +55,8 @@ class VAE_MAPPING(nn.Module):
                  n_pseudopoint = 300,
                  device: Literal['auto','gpu','cpu'] = 'auto',
                  use_layer_norm: bool = False,
-                 use_batch_norm: bool = True):
+                 use_batch_norm: bool = True,
+                 rec_type: Literal['MSE','NB'] = 'MSE'):
 
         super().__init__()
 
@@ -74,6 +75,7 @@ class VAE_MAPPING(nn.Module):
         self.device = device
         self.use_layer_norm = use_layer_norm
         self.use_batch_norm = use_batch_norm
+        self.rec_type = rec_type
 
         # regularization parameters
         self.reg = {"mmd": reg_mmd, "kl": reg_kl, "rec": reg_rec, "z_l2": reg_z_l2, "mmd_inter": reg_mmd_inter} #epoch zone 1
@@ -129,6 +131,8 @@ class VAE_MAPPING(nn.Module):
         if len(self.train_dataset) > cutoff:
             sample_test = torch.randperm(n = len(self.train_dataset))[:cutoff]
             test_dataset = Subset(self.train_dataset, sample_test)
+        else:
+            test_dataset = self.train_dataset
         self.test_loader = DataLoader(dataset = test_dataset, batch_size = len(test_dataset), shuffle = False)
 
         
@@ -179,7 +183,9 @@ class VAE_MAPPING(nn.Module):
 
         library = torch.log(m_promoter.sum(1)).unsqueeze(1)
         #library = torch.ones(_library.shape)
-        x_ = torch.log(1 + m_promoter)
+        x_ = m_promoter
+        if self.rec_type=="NB":
+            x_ = torch.log(1 + m_promoter)
 
         mu_p, logvar_p = self.Encoder(x_, batch_id)
 
@@ -224,7 +230,15 @@ class VAE_MAPPING(nn.Module):
         return gamma
     
     
-    def loss(self, dict_inf = None, count= None, rec= None, ref_z = None, batch_id = None, count_eh = None, lib_size = 1, rec_type = 'MSE'):
+    def loss(self, 
+             dict_inf = None, 
+             count= None, 
+             rec= None, 
+             ref_z = None, 
+             batch_id = None, 
+             count_eh = None, 
+             lib_size = 1,
+             size_factor = None):
         '''
         Loss #1 + #2 = ELBO
         Loss #3 for regularization of the latent space z between "gene score" and "peak"
@@ -268,18 +282,18 @@ class VAE_MAPPING(nn.Module):
             kl_div = torch.sum(kl)/self.batch_size
 
         #2. promoter rec loss
-        if rec_type == 'MSE':
-            rec_rate = rec['rec_promoter']*lib_size
+        if self.rec_type == 'MSE':
+            rec_rate = rec['rec_promoter']
             loss_rec = mse_loss(rec_rate, count.to(self.device_use))
-        elif rec_type == 'NB':
-            rec_rate = rec['rec_promoter']*lib_size
-            loss_rec = NB(theta=rec['theta'], device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec_rate)
-        elif rec_type == 'ZINB':
+        elif self.rec_type == 'NB':
+            #rec_rate = rec['rec_promoter']*lib_size
+            loss_rec = NB(theta=rec['theta'], scale_factor=size_factor, device=self.device_use).loss(y_true=count.to(self.device_use), y_pred=rec['rec_promoter'])
+        elif self.rec_type == 'ZINB':
             lamb_pi = 1e-5
             rec_rate = rec['rec_promoter']*lib_size
             loss_rec = ZINB(pi = rec["pi"], theta = rec["theta"], ridge_lambda = lamb_pi).loss(y_true=count.to(self.device_use), y_pred=rec_rate)
         else:
-            raise ValueError("recon_loss can only be 'ZINB', 'NB', and 'MSE'")
+            raise ValueError("recon_loss can only be 'NB', and 'MSE'")
 
         #3. promoter z L2 loss
         loss_z_l2 = mse_loss(dict_inf['z_p'], count_eh)
@@ -311,10 +325,9 @@ class VAE_MAPPING(nn.Module):
         
     def train_model(self, 
                     nepochs = 50, 
-                    clamp = 0.0, 
+                    clamp = 0.01, 
                     weight_decay:float = 5e-4, 
-                    learning_rate:float = 1e-4,
-                    rec_loss="MSE"):
+                    learning_rate:float = 1e-4):
 
         self.train()
         self.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self.parameters()), lr=learning_rate, weight_decay=weight_decay)
@@ -325,7 +338,8 @@ class VAE_MAPPING(nn.Module):
 
                 #pass encoder
                 dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
-                                          batch_id=x['batch_id'][:,None].to(self.device_use))
+                                          batch_id=x['batch_id'][:,None].to(self.device_use),
+                                          clamp_promoter=clamp)
                 
                 #reconstruct gene score
                 dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -342,8 +356,7 @@ class VAE_MAPPING(nn.Module):
                                                                         count = x['promoter'].to(self.device_use), 
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
-                                                                        lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        rec_type=rec_loss)
+                                                                        lib_size=dict_inf['lib_size'].to(self.device_use))
 
                 loss = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd +self.reg['mmd_inter']*loss_mmd_inter
                 self.optimizer.zero_grad()
@@ -365,7 +378,8 @@ class VAE_MAPPING(nn.Module):
 
                     #pass encoder
                     dict_inf = self.inference(m_promoter = x['promoter'].to(self.device_use), 
-                                            batch_id=x['batch_id'][:,None].to(self.device_use))
+                                            batch_id=x['batch_id'][:,None].to(self.device_use),
+                                            clamp_promoter=clamp)
                 
                     #reconstruct gene score
                     dict_gen = self.generative(z_p = dict_inf['z_p'].to(self.device_use), 
@@ -381,8 +395,7 @@ class VAE_MAPPING(nn.Module):
                                                                         count = x['promoter'].to(self.device_use), 
                                                                         batch_id=x['batch_id'].to(self.device_use),
                                                                         count_eh = x['enhancer'].to(self.device_use), 
-                                                                        lib_size=dict_inf['lib_size'].to(self.device_use),
-                                                                        rec_type=rec_loss)
+                                                                        lib_size=dict_inf['lib_size'].to(self.device_use))
                         
                     #loss_test = self.reg['rec']*loss_promoter + self.reg['z_l2']*loss_z_l2 + self.reg['kl']*loss_kl + self.reg['mmd']*loss_mmd
 
@@ -408,7 +421,7 @@ class VAE_MAPPING(nn.Module):
 
         self.eval()
 
-        dict_inf = self.inference(m_promoter = torch.FloatTensor(self.promoter_dt).to(self.device_use), 
-                                  batch_id=torch.FloatTensor(self.batch_id)[:,None].to(self.device_use))
+        dict_inf = self.inference(m_promoter = self.train_dataset.counts_promoter.to(self.device_use), 
+                                  batch_id=self.train_dataset.batch_id[:,None].to(self.device_use))
 
-        return dict_inf['z_p'].cpu()
+        return dict_inf['z_p'].detach().cpu().numpy()

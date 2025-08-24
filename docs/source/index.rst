@@ -21,7 +21,7 @@ The package consists of three main components:
    <div style="text-align: center;">
        <img src="_static/workflow.jpg" alt="Model architecture" width="80%">
    </div>
-
+   <p style="margin-top:30px;"></p>
 
 To get started with ``epipackpy``, check out the `installation guide <install.rst>`__ and `tutorials <tutorials.rst>`__.
 

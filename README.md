@@ -1,30 +1,46 @@
-## EpiPack
-EpiPack v 0.1.0dev6
+# EpiPack ![version](https://img.shields.io/badge/version-1.0.1-blue.svg)
 
-### Description
-EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type annotation tool. Leveraging its heterogeneous domain adaptation framework, EpiPack is able to
-* Integrate multi-source scATAC-seq datasets without aligned peak set
-* reference mapping of query datasets
-* cell type annotation including OOR detection
+---
 
-<img src = "figures/fig1_updated.jpg" width = 600ptx>
+## Description
+EpiPack is a modular deep learning toolkit for **single-cell ATAC-seq reference mapping, cell label annotation, and out-of-reference (OOR) detection**.  
+By introducing heterogeneous transfer learning and peak-informed variational inference (PEIVI), EpiPack enables scalable construction of harmonized reference atlases and robust query mapping across diverse scATAC-seq datasets. It further provides **global-local OOR detection frameworks** for discovering novel cell types or perturbed cellular states with interpretable uncertainty estimation. Please see our manuscript for more details.
 
-### Dependency
-```
-    python >= 3.8
-    pytorch >= 1.11.0
-    sklearn >= 0.22.1
-    numpy >= 1.21.6
-    pandas >= 1.3.5
-```
-Note: For pytorch installation, we recommend users go to the pytorch portal to download based on their CUDA version.
+<p align="center">
+  <img src="docs/source/_static/fig1_updated.jpg" alt="Main figure" width="600">
+</p>
 
-### Installation
-The package has been uploaded to PyPI. Users can download the package and dependent packages by:
-```
-    pip install epipackpy
+---
+
+## Installation
+The package is available on **PyPI** and can be installed with all required dependencies via:
+```bash
+pip install epipackpy
 ```
 
-### Tutorial
+---
 
-Please checkout the documentations and tutorials at [epipack.readthedocs.io](https://epipack.readthedocs.io/).
+## Tutorial
+Please refer to our full documentation and tutorials at  
+👉 [epipack.readthedocs.io](https://epipack.readthedocs.io/)
+
+---
+
+## Dependencies
+```
+- Python >= 3.9  
+- PyTorch >= 2.0.1  
+- PyTorch-CUDA >= 11.8  
+- NumPy >= 1.26.4  
+- Pandas >= 1.5.3  
+- SciPy >= 1.10.0  
+- Scikit-learn >= 1.5.2  
+- tqdm >= 4.66.1  
+- Matplotlib >= 3.9.4  
+- Seaborn >= 0.12.2  
+```
+---
+
+For **PyTorch installation**, we recommend users to follow the official [PyTorch installation guide](https://pytorch.org/get-started/locally/) to select the correct build based on their CUDA version.
+
+---

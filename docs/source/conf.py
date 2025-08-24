@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "EpiPack"
-copyright = "2023, Yuqi Cheng"
+copyright = "2025, Yuqi Cheng"
 author = "Yuqi Cheng"
 
 

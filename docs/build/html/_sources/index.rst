@@ -10,7 +10,7 @@ Welcome to EpiPack's documentation!
 
 EpiPack leverages a heterogeneous transfer learning framework that accepts gene activity score matrix as bridge and peak embeddings as source information to integrate multi-batch references to construct the cell atlas and transfer cell labels on the common latent space without peak alignment.
 
-.. image:: _static/overview.svg
+.. image:: _static/fig1_updated.jpg
    :width: 500
    :alt: Model architecture
 

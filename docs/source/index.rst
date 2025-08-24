@@ -6,11 +6,17 @@
 Welcome to EpiPack's documentation!
 ===================================
 
-``epipackpy`` implements the EpiPack computational framework for single-cell ATAC-seq data integration, reference mapping and cell type annotation.
+EpiPack is a Python package for end-to-end single-cell ATAC-seq analysis, with core functionalities including reference mapping, cell label transfer, and the detection of out-of-reference (OOR) cell types and states under disease or perturbation conditions.
 
-EpiPack leverages a heterogeneous transfer learning framework that accepts gene activity score matrix as bridge and peak embeddings as source information to integrate multi-batch references to construct the cell atlas and transfer cell labels on the common latent space without peak alignment.
+The package consists of three main components:
 
-.. image:: _static/fig1_updated.jpg
+- ``PEIVI`` and ``PEIVI mapping`` functions for reference construction and query mapping.
+
+- ``epk.classifier`` function for cell label transfer.
+
+- ``Global OOR detector`` and ``local OOR detector`` functions for detecting OOR cells under various conditions.
+
+.. image:: _static/workflow.jpg
    :width: 500
    :alt: Model architecture
 

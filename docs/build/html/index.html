@@ -312,9 +312,14 @@ document.write(`
                   
   <section id="welcome-to-epipack-s-documentation">
 <h1>Welcome to EpiPack’s documentation!<a class="headerlink" href="#welcome-to-epipack-s-documentation" title="Permalink to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">epipackpy</span></code> implements the EpiPack computational framework for single-cell ATAC-seq data integration, reference mapping and cell type annotation.</p>
-<p>EpiPack leverages a heterogeneous transfer learning framework that accepts gene activity score matrix as bridge and peak embeddings as source information to integrate multi-batch references to construct the cell atlas and transfer cell labels on the common latent space without peak alignment.</p>
-<a class="reference internal image-reference" href="_images/fig1_updated.jpg"><img alt="Model architecture" src="_images/fig1_updated.jpg" style="width: 500px;" /></a>
+<p>EpiPack is a Python package for end-to-end single-cell ATAC-seq analysis, with core functionalities including reference mapping, cell label transfer, and the detection of out-of-reference (OOR) cell types and states under disease or perturbation conditions.</p>
+<p>The package consists of three main components:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PEIVI</span></code> and <code class="docutils literal notranslate"><span class="pre">PEIVI</span> <span class="pre">mapping</span></code> functions for reference construction and query mapping.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">epk.classifier</span></code> function for cell label transfer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Global</span> <span class="pre">OOR</span> <span class="pre">detector</span></code> and <code class="docutils literal notranslate"><span class="pre">local</span> <span class="pre">OOR</span> <span class="pre">detector</span></code> functions for detecting OOR cells under various conditions.</p></li>
+</ul>
+<a class="reference internal image-reference" href="_images/workflow.jpg"><img alt="Model architecture" src="_images/workflow.jpg" style="width: 500px;" /></a>
 <p>To get started with <code class="docutils literal notranslate"><span class="pre">epipackpy</span></code>, check out the <a class="reference internal" href="install.html"><span class="doc">installation guide</span></a> and <a class="reference internal" href="tutorials.html"><span class="doc">tutorials</span></a>.</p>
 <div class="toctree-wrapper compound">
 </div>

@@ -4,6 +4,9 @@ import torch
 
 def query_model_initial(query_model = None, ref_model_param = None, query_batch_num=None, gene_feature_num = 3000, latent_embedding_dim = 50):
     
+    if query_batch_num == 1:
+        query_batch_num = 0
+
     ref_para = ref_model_param
     device = ref_para['Encoder.fc.fc_layers.Layer 0.0.weight'].device
 

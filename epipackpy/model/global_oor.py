@@ -4,22 +4,32 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2
 
-class global_oor_query():
+class Global_oor_detector():
 
     '''
     global classification and oor detection
     '''
 
-    def __init__(self, train_data, query_data, label):
+    def __init__(self, 
+                 train_data, 
+                 query_data, 
+                 ref_label,
+                 predicted_label):
         
         self.train_data = train_data
         self.query_data = query_data
 
         ## init label
-        self.le = LabelEncoder()
-        self.label = self.le.fit_transform(label)
+        #self.le = LabelEncoder()
+        #self.label = self.le.fit_transform(ref_label)
+        self.label = ref_label
+        self.predicted_label = predicted_label
 
-        print("- Classifier prepared")
+        print("- Initializing global OOR detector...")
+
+        self.init_mu, self.init_cov_inv = self._gaussian_init()
+
+        print("- Detector is ready")
 
     def _gaussian_init(self):
 
@@ -30,8 +40,10 @@ class global_oor_query():
         for i in np.unique(self.label):
             class_i_data = self.train_data[np.where(self.label == i)]
             class_i_mean = np.mean(class_i_data, axis=0, keepdims=True)
-            class_i_norm = class_i_data - class_i_mean
-            class_i_cov = np.matmul(class_i_norm.T, class_i_norm)/(class_i_norm.shape[0]-1)
+            #class_i_norm = class_i_data - class_i_mean
+            #class_i_cov = np.matmul(class_i_norm.T, class_i_norm)/(class_i_norm.shape[0]-1)
+            class_i_cov = np.cov(class_i_data, rowvar=False, bias=False) 
+            class_i_cov += np.eye(class_i_cov.shape[0]) * 1e-6  
 
             init_mu.append(class_i_mean)
             init_cov_inv.append(np.linalg.inv(class_i_cov))
@@ -56,26 +68,14 @@ class global_oor_query():
 
         return dist_mat_query
         
-    def annotate(self,k = 15, confidence_threshold = 1e-4):
-        
-        ###### primary classification
-
-        ## init knn classifier
-
-        print("- Running kNN classifier with k =",k,"...")
-        neigh = KNeighborsClassifier(n_neighbors=k)  
-        neigh.fit(self.train_data, self.label)
-        querylabel = neigh.predict(self.query_data)
-        print("- kNN complete")
+    def annotate(self, confidence_threshold = 1e-3):
 
         ###### confidence score calculation
 
         ## init gaussian assumption
-        print("- Gaussian distance calculating...")
-        init_mu, init_cov_inv = self._gaussian_init()
-        dist_query_mat = self._cal_dist_query(init_mu, init_cov_inv)
-
-        print("- Gaussian distance complete")
+        print("- Mahalanobis distance calculating...")
+        
+        dist_query_mat = self._cal_dist_query(self.init_mu, self.init_cov_inv)
 
         ## distance of each class distribution
 
@@ -87,7 +87,7 @@ class global_oor_query():
         
         ## oor recogniztion
 
-        print("- Start detecting global out-of-reference cells...")
+        print("- Start quantifying global OOR cells...")
         
         reject_cell_list = []
         prob_score = []
@@ -95,7 +95,7 @@ class global_oor_query():
         df = self.query_data.shape[1]
 
         for i in range(self.query_data.shape[0]):
-            raw_label = querylabel[i]
+            raw_label = self.predicted_label[i]
             dist_i_c = dist_query_mat[i][raw_label]
             #dist_c_in = class_distribution_mu[raw_label]
             # min gaussian dist
@@ -122,9 +122,9 @@ class global_oor_query():
             prob_score.append(q)
         
         ## return final label
-        final_cell_type = self.le.inverse_transform(querylabel)
-        final_cell_type[reject_cell_list] = 'Unknown'
+        #final_cell_type = self.le.inverse_transform(querylabel)
+        #final_cell_type[reject_cell_list] = 'Unknown'
 
         print("- Annotation complete")
 
-        return final_cell_type, prob_score
+        return reject_cell_list, prob_score

@@ -11,7 +11,7 @@ with open(ROOT_DIR / "epipackpy/_version.py") as fp:
 
 setup(
     name="epipackpy",
-    description='EpiPack: scATAC-seq integration, reference mapping and cell type annotation',
+    description='EpiPack: scATAC-seq reference mapping, label transfer and OOR detection',
     long_description=README,
     long_description_content_type='text/markdown',
     url='https://github.com/ZhangLabGT/EpiPack', 
@@ -36,11 +36,8 @@ setup(
         "tqdm>=4.62",
         "typing_extensions",
         "torch>=2.0",
-        "polars>=0.19",
-        "pyarrow>=14.0",
-        "pybiomart>=0.2.0",
-        "pyranges",
         "seaborn>=0.12",
+        "matplotlib >= 3.9"
     ],
     #extras_require={
     #    'recommend': ['scanpy>=1.9'],

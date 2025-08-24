@@ -7,7 +7,7 @@ EpiPack is single-cell ATAC-seq atlas construction (integration) and cell type a
 * reference mapping of query datasets
 * cell type annotation including OOR detection
 
-<img src = "figures/overview.png" width = 600ptx>
+<img src = "figures/fig1_updated.jpg" width = 600ptx>
 
 ### Dependency
 ```

@@ -16,9 +16,11 @@ The package consists of three main components:
 
 - ``Global OOR detector`` and ``local OOR detector`` functions for detecting OOR cells under various conditions.
 
-.. image:: _static/workflow.jpg
-   :width: 500
-   :alt: Model architecture
+.. raw:: html
+
+   <div style="text-align: center;">
+       <img src="_static/workflow.jpg" alt="Model architecture" width="80%">
+   </div>
 
 
 To get started with ``epipackpy``, check out the `installation guide <install.rst>`__ and `tutorials <tutorials.rst>`__.

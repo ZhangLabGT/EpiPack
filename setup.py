@@ -36,8 +36,7 @@ setup(
         "tqdm>=4.62",
         "typing_extensions",
         "torch>=2.0",
-        "seaborn>=0.12",
-        "matplotlib >= 3.9"
+        "seaborn>=0.12"
     ],
     #extras_require={
     #    'recommend': ['scanpy>=1.9'],

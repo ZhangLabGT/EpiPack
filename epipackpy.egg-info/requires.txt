@@ -1,9 +1,0 @@
-numpy>=1.17.0
-pandas<2.1.2,>=1.0
-scipy<2.0.0,>=1.4
-scikit-learn<2.0.0,>=0.23
-tqdm>=4.62
-typing_extensions
-torch>=2.0
-seaborn>=0.12
-matplotlib>=3.9

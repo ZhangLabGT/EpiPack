@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="docs/source/_static/epipack_logo8.svg" width="200">
+</p>
+
 # EpiPack ![version](https://img.shields.io/badge/version-1.0.1-blue.svg)
 
 ---
@@ -7,7 +11,7 @@ EpiPack is a modular deep learning toolkit for **single-cell ATAC-seq reference 
 By introducing heterogeneous transfer learning and peak-informed variational inference (PEIVI), EpiPack enables scalable construction of harmonized reference atlases and robust query mapping across diverse scATAC-seq datasets. It further provides **global-local OOR detection frameworks** for discovering novel cell types or perturbed cellular states with interpretable uncertainty estimation. Please see our manuscript for more details.
 
 <p align="center">
-  <img src="docs/source/_static/fig1_updated.jpg" alt="Main figure" width="600">
+  <img src="docs/source/_static/workflow.jpg" alt="Main figure" width="600">
 </p>
 
 ---

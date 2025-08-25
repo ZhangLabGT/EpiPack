@@ -31,6 +31,7 @@ To get started with ``epipackpy``, check out the `installation guide <install.rs
    :caption: Getting started
 
    install
+   oor_intro
    
 .. toctree::
    :hidden:

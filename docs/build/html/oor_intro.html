@@ -47,6 +47,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'oor_intro';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data preparation" href="data_preparation.html" />
+    <link rel="prev" title="Installation guide" href="install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -140,8 +142,9 @@
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Introduction to Global and Local OOR Detection</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
@@ -320,12 +323,12 @@ document.write(`
 <p style="margin-top:30px;"></p><p><strong>Global OOR</strong></p>
 <blockquote>
 <div><p>Global OOR refers to unseen cell types that are markedly distinct from any in-reference populations.  These cells typically form <strong>discrete clusters</strong> in the joint latent embedding space, separated by clear Euclidean distances from the existing reference clusters.
-Examples include identifying a completely new immune lineage, such as B cells absent in a T cell–only reference.  In EpiPack, global oor detector is coupled with classifier. For uses who want to find novel cell type when annotating cell labels, please refer to <a href="#id1"><span class="problematic" id="id2">`Global OOR detection&lt;data_preparation.ipynb`__</span></a>.</p>
+Examples include identifying a completely new immune lineage, such as B cells absent in a T cell–only reference.  In EpiPack, global oor detector is coupled with classifier. For uses who want to find novel cell type when annotating cell labels, please refer to <strong>Global OOR detection</strong> tutorial.</p>
 </div></blockquote>
 <dl class="simple">
 <dt><strong>Local OOR*</strong></dt><dd><p>Local OOR captures the emergence of <strong>perturbed or transitional states</strong> that are closely related to in-reference populations but represent a continuous shift along the cellular manifold.
 Unlike global OOR, local OOR cells do not form isolated clusters but instead manifest as gradual deviations within the local geometry of the embedding, often reflecting disease-associated or activation-induced state changes. Please refer to <cite>Dann et al&lt;https://www.nature.com/articles/s41588-023-01523-7&gt;</cite> for experiment setting tests.
-In EpiPack, we design <code class="docutils literal notranslate"><span class="pre">local_oor_detector</span></code> module for this demand. For uses who want to find detect scATAC-seq perturbation populations, please refer to <a href="#id1"><span class="problematic" id="id3">`Local OOR detection&lt;data_preparation.ipynb`__</span></a>.</p>
+In EpiPack, we design <code class="docutils literal notranslate"><span class="pre">local_oor_detector</span></code> module for this demand. For uses who want to find detect scATAC-seq perturbation populations, please refer to <strong>Local OOR detection</strong> tutorial.</p>
 </dd>
 </dl>
 </section>
@@ -341,6 +344,24 @@ In EpiPack, we design <code class="docutils literal notranslate"><span class="pr
                 <footer class="prev-next-footer">
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="install.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Installation guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="data_preparation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data preparation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               

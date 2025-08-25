@@ -18,6 +18,7 @@ In the context of scATAC-seq reference mapping, the detection of out-of-referenc
 
 
 **Local OOR***
+
     Local OOR captures the emergence of **perturbed or transitional states** that are closely related to in-reference populations but represent a continuous shift along the cellular manifold.  
     Unlike global OOR, local OOR cells do not form isolated clusters but instead manifest as gradual deviations within the local geometry of the embedding, often reflecting disease-associated or activation-induced state changes. Please refer to `Dann et al<https://www.nature.com/articles/s41588-023-01523-7>` for experiment setting tests.
     In EpiPack, we design ``local_oor_detector`` module for this demand. For uses who want to find detect scATAC-seq perturbation populations, please refer to **Local OOR detection** tutorial.

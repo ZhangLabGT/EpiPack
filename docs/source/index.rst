@@ -41,3 +41,4 @@ To get started with ``epipackpy``, check out the `installation guide <install.rs
    data_preparation.ipynb
    reference_mapping.ipynb
    cell_label_transfer.ipynb
+   global_oor.ipynb

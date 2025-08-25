@@ -1,0 +1,697 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Reference mapping with PEIVI &#8212; EpiPack  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'reference_mapping';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Data preparation" href="data_preparation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/epipack_logo8.svg" class="logo__image only-light" alt="EpiPack  documentation - Home"/>
+    <script>document.write(`<img src="_static/epipack_logo8.svg" class="logo__image only-dark" alt="EpiPack  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="data_preparation.html">Data preparation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Reference mapping with PEIVI</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/ZhangLabGT/EpiPack" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/reference_mapping.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Reference mapping with PEIVI</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Model-training">Model training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Query-mapping">Query mapping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#[Optional]-Data-visualization">[Optional] Data visualization</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Reference-mapping-with-PEIVI">
+<h1>Reference mapping with PEIVI<a class="headerlink" href="#Reference-mapping-with-PEIVI" title="Permalink to this heading">#</a></h1>
+<p>After obtaining the reference and query gene score sets as well as the peak embeddings for each batch, we use the main <code class="docutils literal notranslate"><span class="pre">PEIVI</span></code> model to construct the reference model and save it. In this tutorial, we employ a five-batch PBMC dataset, with three batches designated as the reference and two batches as the query.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>## load epipack package
+
+# !pip install --upgrade epipackpy
+import scanpy as sc
+import numpy as np
+import pandas as pd
+
+import epipackpy as epk
+print(epk.__version__)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1.0.1dev4
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>peak_1 = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_5k_nextgem/peak_1.h5ad&quot;)
+peak_2 = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_10k_nextgem/peak_2.h5ad&quot;)
+peak_3 = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_10k_chromiumX/peak_3.h5ad&quot;)
+peak_4 = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_10k_Chromium_Controller/peak_4.h5ad&quot;)
+peak_5 = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_multiome/peak_6.h5ad&quot;)
+
+genescore_mtx = sc.read_h5ad(&quot;data/pbmc_batch/pbmc_5b_genemtx.h5ad&quot;)
+
+ref1 = genescore_mtx[genescore_mtx.obs[&#39;batch_id&#39;]==&#39;batch 1&#39;]
+ref2 = genescore_mtx[genescore_mtx.obs[&#39;batch_id&#39;]==&#39;batch 2&#39;]
+ref3 = genescore_mtx[genescore_mtx.obs[&#39;batch_id&#39;]==&#39;batch 6&#39;]
+ref = sc.concat([ref1, ref2, ref3])
+
+query_1 = genescore_mtx[genescore_mtx.obs[&#39;batch_id&#39;]==&#39;batch 3&#39;]
+query_2 = genescore_mtx[genescore_mtx.obs[&#39;batch_id&#39;]==&#39;batch 4&#39;]
+query = sc.concat([query_1, query_2])
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/anndata/_core/anndata.py:1838: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+  utils.warn_names_duplicates(&#34;obs&#34;)
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/anndata/_core/anndata.py:1838: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+  utils.warn_names_duplicates(&#34;obs&#34;)
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/anndata/_core/anndata.py:1838: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+  utils.warn_names_duplicates(&#34;obs&#34;)
+</pre></div></div>
+</div>
+<section id="Model-training">
+<h2>Model training<a class="headerlink" href="#Model-training" title="Permalink to this heading">#</a></h2>
+<p>Before training the model, we first need to normalize the raw expression matrix.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sc.pp.normalize_total(ref, target_sum=1e4)
+sc.pp.log1p(ref)
+
+sc.pp.normalize_total(query, target_sum=1e4)
+sc.pp.log1p(query)
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">PEIVI</span></code> model uses the normalized expression matrix as input, along with the concatenated peak embeddings and batch encodings. This procedure is consistent across both reference construction and query mapping. We begin by constructing the reference model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#batch encoding
+
+ref.obs[&#39;batch_code&#39;] = pd.Categorical(ref.obs[&#39;batch_id&#39;]).codes.astype(int)
+
+#peak concat
+adatas = [peak_1, peak_2, peak_5]
+peak_emb = np.concatenate([a.obsm[&#39;epipack_z_bce&#39;] for a in adatas], axis=0)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>epk_base = epk.ml.PEIVI(count=ref.X, peak_emb = peak_emb,
+                         batch_id=ref.obs[&#39;batch_code&#39;], reg_mmd=10, reg_rec=1, reg_z_l2=1, use_batch_norm=False, use_layer_norm=True)
+
+#train model
+epk_base.train_model(pre_train_epoch=50, nepochs=100)
+
+#get latent reference embedding
+ref.obsm[&#39;z_ref&#39;] = epk_base.get_latent()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+- Model initializing...
+- [Auto-detection]: GPU detetced. Model will be initialized in GPU mode.
+- Initialization complete...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Epochs: 100%|██████████| 100/100 [01:57&lt;00:00,  1.17s/it, val_kl_loss=1.96e+5, val_loss_z_dist=25.5, val_mmd=0.176, val_rec_loss=1.93e+3]
+</pre></div></div>
+</div>
+<p>[Optional] You may use the <a class="reference external" href="https://docs.python.org/3/library/pickle.html">pickle</a> module to save the pre-trained reference model for query mapping. The model saving and loading code are provided as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#save model
+import pickle
+
+with open(&quot;epk_model.pkl&quot;, &quot;wb&quot;) as f:
+    pickle.dump(epk_base, f)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#load model
+with open(&quot;epk_model.pkl&quot;, &quot;rb&quot;) as f:
+    epi_integration_loaded = pickle.load(f)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Query-mapping">
+<h2>Query mapping<a class="headerlink" href="#Query-mapping" title="Permalink to this heading">#</a></h2>
+<p>We will use the pretrained reference model to perform query mapping. The first step is to create the query model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>query.obs[&#39;batch_code&#39;] = pd.Categorical(query.obs[&#39;batch_id&#39;]).codes.astype(int)
+
+adatas = [peak_3, peak_4]
+peak_emb = np.concatenate([a.obsm[&#39;epipack_z_bce&#39;] for a in adatas], axis=0)
+</pre></div>
+</div>
+</div>
+<p>In addition to the objects required by the reference model, the mapping model also requires the reference mapping <code class="docutils literal notranslate"><span class="pre">ref.obsm['z_ref']</span></code> to serve as the distributional baseline.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>epk_query = epk.ml.PEIVI_MAPPING(promoter_dt=query.X, enhancer_z = peak_emb, ref_embedding=ref.obsm[&#39;z_ref&#39;],
+                         batch_id=query.obs[&#39;batch_code&#39;], reg_mmd=10, reg_mmd_inter = 100, reg_rec=0.1, reg_z_l2=0.1, use_batch_norm=False,use_layer_norm=True)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+- Model initializing...
+- [Auto-detection]: GPU detetced. Model will be initialized in GPU mode.
+- Initialization complete...
+</pre></div></div>
+</div>
+<p>Then use <code class="docutils literal notranslate"><span class="pre">query_model_initial</span></code> function to initialize query model parameters.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>query_model = epk.ml.query_model_initial(epk_query, epi_integration_loaded.state_dict(), query_batch_num=2)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>#train query model
+query_model.train_model(nepochs=100)
+query.obsm[&#39;z_query&#39;] = query_model.get_latent()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Epochs: 100%|██████████| 100/100 [02:58&lt;00:00,  1.78s/it, val_kl_loss=1.97e+5, val_loss_z_dist=36.5, val_mmd=0.0382, val_mmd_inter=0.0511, val_rec_loss=1.81e+3]
+</pre></div></div>
+</div>
+<p>The mapped embedding <code class="docutils literal notranslate"><span class="pre">query.obsm['z_query']</span></code> and annotated reference embedding <code class="docutils literal notranslate"><span class="pre">ref.obsm['z_ref']</span></code> will be further used to transfer cell labels and discover OOR cell states in query.</p>
+</section>
+<section id="[Optional]-Data-visualization">
+<h2>[Optional] Data visualization<a class="headerlink" href="#[Optional]-Data-visualization" title="Permalink to this heading">#</a></h2>
+<p>To visualize the PEIVI’s learned embeddings, we use UMAP. Since this data has been used for benchmarking, we can use the curated label to see if the reference mapping worked reasonably well.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import seaborn as sns
+
+sc.set_figure_params(figsize=(6, 6), frameon=False)
+sns.set_theme()
+
+tmp = sc.concat([ref, query])
+tmp.obsm[&#39;z_tmp&#39;] = np.concatenate([ref.obsm[&#39;z_ref&#39;], query.obsm[&#39;z_query&#39;]])
+
+sc.pp.neighbors(tmp, n_neighbors=50, use_rep=&#39;z_tmp&#39;)
+sc.tl.umap(tmp)
+#sc.tl.leiden(tmp, resolution=1.5)
+sc.pl.umap(tmp, color=[&#39;celltype&#39;, &#39;batch_id&#39;], ncols=2, wspace=0.6)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/anndata/_core/anndata.py:1838: UserWarning: Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+  utils.warn_names_duplicates(&#34;obs&#34;)
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:346: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  init_rp_tree(data, dist, current_graph, leaf_array)
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:348: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  init_random(n_neighbors, data, current_graph, dist, rng_state)
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:358: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  nn_descent_internal_low_memory_parallel(
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:358: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  nn_descent_internal_low_memory_parallel(
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:370: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  nn_descent_internal_high_memory_parallel(
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/pynndescent/pynndescent_.py:370: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  nn_descent_internal_high_memory_parallel(
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/numba/core/types/functions.py:310: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  if (utils.use_new_style_errors() and not
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/numba/core/types/functions.py:310: NumbaPendingDeprecationWarning: <span class="ansi-bold">The &#39;old_style&#39; error capturing is deprecated and will be replaced by `new_style` in a future release.</span>
+  if (utils.use_new_style_errors() and not
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/scanpy/plotting/_tools/scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+/nethome/ycheng430/miniconda3/envs/epipack/lib/python3.9/site-packages/scanpy/plotting/_tools/scatterplots.py:392: UserWarning: No data for colormapping provided via &#39;c&#39;. Parameters &#39;cmap&#39; will be ignored
+  cax = scatter(
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/reference_mapping_22_1.png" class="no-scaled-link" src="_images/reference_mapping_22_1.png" style="width: 1268px; height: 402px;" />
+</div>
+</div>
+<p>We can observe that the query data (batches 3 and 4 in the right panel) are well integrated into the reference space, while the cell type clusters remain clearly separated.</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="data_preparation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data preparation</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Model-training">Model training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Query-mapping">Query mapping</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#[Optional]-Data-visualization">[Optional] Data visualization</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Yuqi Cheng
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2025, Yuqi Cheng.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

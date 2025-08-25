@@ -38,3 +38,4 @@ To get started with ``epipackpy``, check out the `installation guide <install.rs
    :caption: Tutorials
 
    data_preparation.ipynb
+   reference_mapping.ipynb

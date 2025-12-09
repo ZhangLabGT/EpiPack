@@ -28,6 +28,8 @@ pip install epipackpy
 Please refer to our full documentation and tutorials at  
 👉 [epipack.readthedocs.io](https://epipack.readthedocs.io/)
 
+Demo datasets used in the tutorial can be downloaded from our [Google Drive folder](https://drive.google.com/drive/folders/1wyuJZF87lMvhXUZQqRroUlNHLD9OfYdv?usp=drive_link). The names of the datasets are aligned with the names that we used in the tutorial for better reproduction.
+
 ---
 
 ## Dependencies

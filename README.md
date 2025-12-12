@@ -2,7 +2,7 @@
   <img src="docs/source/_static/epipack_logo8.svg" width="200">
 </p>
 
-# EpiPack ![version](https://img.shields.io/badge/version-1.0.1-blue.svg)
+# EpiPack ![version](https://img.shields.io/badge/version-1.0.2-blue.svg)
 
 ---
 

@@ -39,6 +39,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.mathjax",
     "nbsphinx",
+    "sphinx_copybutton",
 ]
 autosectionlabel_prefix_document = True
 

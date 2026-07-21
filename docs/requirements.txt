@@ -4,3 +4,4 @@ sphinx_book_theme==1.0.1
 nbsphinx==0.9.3
 recommonmark==0.7.1
 sphinx_automodapi
+sphinx-copybutton

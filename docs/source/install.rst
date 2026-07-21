@@ -11,6 +11,8 @@ The ``epipackpy`` package can be installed via pip using the following commands:
 
     pip install epipackpy
 
+For quick environment setup, please download ``epipack.yml`` to retrieve the conda envrionment.
+
 .. note::
     For GPU-based Pytorch installation, we recommend installing the ``torch`` package on
     `pytorch portal <https://pytorch.org/get-started/locally/>`__

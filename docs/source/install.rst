@@ -22,7 +22,7 @@ If the ``epipack.yml`` is used, please use the following commands:
 
 .. code-block:: bash
 
-    conda env create -f epipack_clean.yml
+    conda env create -f epipack.yml
     conda activate epipack_clean
 
     pip install --no-deps epipackpy

@@ -43,3 +43,10 @@ To get started with ``epipackpy``, check out the `installation guide <install.rs
    cell_label_transfer.ipynb
    global_oor.ipynb
    local_oor.ipynb
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: API Reference
+
+   api_reference.ipynb
